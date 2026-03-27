@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The CBS-elor</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Poppins', sans-serif; background: #0d0d0d; min-height: 100vh; display: flex; flex-direction: column; align-items: center; overflow-x: hidden; color: #fff; }
+        .phone-frame { width: 393px; min-height: 100vh; position: relative; overflow: hidden; background: #111; display: flex; flex-direction: column; }
+
+        .status-bar { display: flex; justify-content: space-between; align-items: center; padding: 12px 24px 8px; font-size: 0.8rem; font-weight: 600; flex-shrink: 0; }
+        .status-bar .time { font-weight: 700; }
+        .status-icons { display: flex; gap: 6px; align-items: center; }
+
+        .nav-bar { display: flex; justify-content: space-between; align-items: center; padding: 8px 20px 12px; flex-shrink: 0; }
+        .nav-logo { display: flex; align-items: center; gap: 8px; }
+        .heart-icon { width: 36px; height: 36px; }
+        .heart-icon svg { width: 100%; height: 100%; }
+        .app-name { font-size: 1.2rem; font-weight: 700; background: linear-gradient(135deg, #ff6b9d, #c44dff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .nav-actions { display: flex; gap: 16px; }
+        .nav-btn { width: 36px; height: 36px; border-radius: 50%; background: rgba(255,255,255,0.08); border: none; color: #888; font-size: 1rem; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+
+        .view { display: none; flex: 1; min-height: 0; }
+        .view.active { display: flex; flex-direction: column; }
+
+        /* ══ DISCOVER ══ */
+        .card-stack { position: relative; width: 100%; flex: 1; padding: 0 12px; }
+        .profile-card {
+            position: absolute; width: calc(100% - 24px); height: 100%;
+            border-radius: 24px; overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+            transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.4s ease;
+            cursor: grab; user-select: none; background: #1a1a1a;
+        }
+        .profile-card.swiping-left { transform: translateX(-150%) rotate(-25deg) !important; opacity: 0 !important; transition: transform 0.5s ease, opacity 0.5s ease; }
+        .profile-card.swiping-right { transform: translateX(150%) rotate(25deg) !important; opacity: 0 !important; transition: transform 0.5s ease, opacity 0.5s ease; }
+
+        /* Full-bleed photo */
+        .photo-gallery { width: 100%; height: 100%; position: relative; overflow: hidden; }
+        .photo-gallery img {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            object-fit: cover; object-position: top center;
+            opacity: 0; transition: opacity 0.35s ease;
+        }
+        .photo-gallery img.active-photo { opacity: 1; }
+        .photo-tap-zones { position: absolute; top: 0; left: 0; width: 100%; height: 80%; z-index: 3; display: flex; }
+        .photo-tap-left, .photo-tap-right { flex: 1; cursor: pointer; }
+        .photo-dots { position: absolute; top: 10px; left: 12px; right: 12px; display: flex; gap: 4px; z-index: 4; }
+        .photo-dot { flex: 1; height: 3px; border-radius: 2px; background: rgba(255,255,255,0.3); transition: background 0.3s; }
+        .photo-dot.active-dot { background: rgba(255,255,255,0.95); }
+
+        /* Name overlay at bottom of card */
+        .card-name-overlay {
+            position: absolute; bottom: 0; left: 0; right: 0; z-index: 5;
+            padding: 70px 20px 18px;
+            background: linear-gradient(to top, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.5) 55%, transparent 100%);
+            cursor: pointer;
+        }
+        .card-name-row { display: flex; align-items: center; margin-bottom: 3px; }
+        .card-name-row h2 { font-size: 1.6rem; font-weight: 700; text-shadow: 0 2px 8px rgba(0,0,0,0.5); }
+        .card-name-row .age { font-size: 1.1rem; color: rgba(255,255,255,0.8); font-weight: 400; margin-left: 8px; }
+        .verified { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; background: linear-gradient(135deg, #4da6ff, #1a8cff); border-radius: 50%; margin-left: 6px; font-size: 0.6rem; }
+        .card-title { font-size: 0.72rem; color: #ff6b9d; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+        .card-expand-hint { font-size: 0.65rem; color: rgba(255,255,255,0.4); font-weight: 400; display: flex; align-items: center; gap: 4px; }
+        .card-expand-hint svg { width: 14px; height: 14px; }
+
+        /* Swipe Indicators */
+        .swipe-indicator { position: absolute; top: 40%; transform: translateY(-50%); font-size: 1.6rem; font-weight: 800; padding: 6px 18px; border-radius: 8px; border: 3px solid; z-index: 10; opacity: 0; transition: opacity 0.15s ease; pointer-events: none; letter-spacing: 2px; }
+        .swipe-indicator.like { right: 20px; color: #22c55e; border-color: #22c55e; transform: translateY(-50%) rotate(15deg); }
+        .swipe-indicator.nope { left: 20px; color: #ef4444; border-color: #ef4444; transform: translateY(-50%) rotate(-15deg); }
+
+        /* Action Buttons */
+        .actions { display: flex; justify-content: center; align-items: center; gap: 18px; padding: 14px 0 8px; flex-shrink: 0; }
+        .action-btn { border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s ease; box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
+        .action-btn:hover { transform: scale(1.1); }
+        .action-btn:active { transform: scale(0.95); }
+        .btn-nope { width: 56px; height: 56px; background: #1e1e1e; color: #888; font-size: 1.4rem; }
+        .btn-super { width: 72px; height: 72px; background: linear-gradient(135deg, #ff6b9d, #ff4081); color: white; font-size: 1.8rem; box-shadow: 0 4px 30px rgba(255,107,157,0.4); }
+        .btn-like { width: 56px; height: 56px; background: #1e1e1e; color: #888; font-size: 1.4rem; }
+        .counter { text-align: center; color: #444; font-size: 0.7rem; padding-bottom: 2px; flex-shrink: 0; }
+
+        /* ══ MATCHES ══ */
+        .matches-view { padding: 0 16px; overflow-y: auto; flex: 1; }
+        .matches-header { font-size: 0.75rem; color: #666; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; margin: 16px 0 12px 4px; }
+        .online-row { display: flex; gap: 16px; overflow-x: auto; padding: 4px 0 16px; scrollbar-width: none; }
+        .online-row::-webkit-scrollbar { display: none; }
+        .online-item { display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; flex-shrink: 0; }
+        .online-avatar { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; object-position: top center; border: 2px solid #ff6b9d; padding: 2px; }
+        .online-dot { position: relative; }
+        .online-dot::after { content: ''; position: absolute; bottom: 18px; right: 0; width: 12px; height: 12px; background: #22c55e; border-radius: 50%; border: 2px solid #111; }
+        .online-name { font-size: 0.65rem; color: #aaa; font-weight: 500; }
+        .match-list { display: flex; flex-direction: column; gap: 2px; }
+        .match-item { display: flex; align-items: center; gap: 14px; padding: 14px 8px; border-radius: 16px; cursor: pointer; transition: background 0.2s; }
+        .match-item:hover { background: rgba(255,255,255,0.04); }
+        .match-avatar { width: 54px; height: 54px; border-radius: 50%; object-fit: cover; object-position: top center; flex-shrink: 0; }
+        .match-info { flex: 1; min-width: 0; }
+        .match-name-row { display: flex; justify-content: space-between; align-items: center; }
+        .match-name { font-size: 0.95rem; font-weight: 600; }
+        .match-time { font-size: 0.65rem; color: #555; }
+        .match-preview { font-size: 0.75rem; color: #666; font-weight: 300; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 2px; }
+        .match-badge { width: 22px; height: 22px; border-radius: 50%; background: #ff4081; color: white; font-size: 0.6rem; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0; }
+
+        /* ══ DETAIL VIEW - scrollable full-screen profile ══ */
+        .detail-view { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #111; z-index: 50; display: none; overflow-y: auto; }
+        .detail-view.active { display: block; }
+        .detail-back { position: fixed; top: 54px; left: calc(50% - 196px + 16px); z-index: 60; width: 36px; height: 36px; border-radius: 50%; background: rgba(0,0,0,0.5); backdrop-filter: blur(10px); border: none; color: white; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+
+        .detail-gallery { width: 100%; height: 500px; position: relative; overflow: hidden; }
+        .detail-gallery img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; object-position: top center; opacity: 0; transition: opacity 0.35s ease; }
+        .detail-gallery img.active-photo { opacity: 1; }
+        .detail-dots { position: absolute; top: 60px; left: 16px; right: 16px; display: flex; gap: 4px; z-index: 55; }
+        .detail-dot-bar { flex: 1; height: 3px; border-radius: 2px; background: rgba(255,255,255,0.3); transition: background 0.3s; }
+        .detail-dot-bar.active-dot { background: rgba(255,255,255,0.95); }
+        .detail-tap-zones { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 54; display: flex; }
+        .detail-tap-left, .detail-tap-right { flex: 1; cursor: pointer; }
+
+        .detail-gradient { height: 100px; margin-top: -100px; position: relative; background: linear-gradient(to top, #111 0%, transparent 100%); z-index: 2; pointer-events: none; }
+        .detail-content { padding: 0 24px 40px; position: relative; z-index: 3; }
+        .detail-name-row { display: flex; align-items: center; margin-bottom: 4px; }
+        .detail-name-row h2 { font-size: 1.8rem; font-weight: 700; }
+        .detail-name-row .age { font-size: 1.2rem; color: rgba(255,255,255,0.6); margin-left: 10px; }
+        .detail-name-row .verified { width: 22px; height: 22px; font-size: 0.65rem; }
+        .detail-title { font-size: 0.8rem; color: #ff6b9d; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 16px; }
+        .detail-bio { font-size: 0.9rem; line-height: 1.7; color: rgba(255,255,255,0.6); font-weight: 300; margin-bottom: 20px; }
+        .detail-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; }
+        .detail-tag { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); color: rgba(255,255,255,0.8); padding: 8px 18px; border-radius: 24px; font-size: 0.78rem; font-weight: 500; }
+        .detail-actions { display: flex; justify-content: center; gap: 20px; padding: 10px 0 20px; }
+
+        /* Bottom Nav */
+        .bottom-nav { display: flex; justify-content: space-around; padding: 10px 20px 24px; border-top: 1px solid rgba(255,255,255,0.06); flex-shrink: 0; background: #111; }
+        .bottom-nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; color: #555; font-size: 0.65rem; font-weight: 500; cursor: pointer; transition: color 0.2s; }
+        .bottom-nav-item.active { color: #ff6b9d; }
+        .bottom-nav-item svg { width: 22px; height: 22px; }
+
+        /* Match Overlay */
+        .match-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.92); display: none; align-items: center; justify-content: center; z-index: 100; flex-direction: column; }
+        .match-overlay.active { display: flex; animation: fadeIn 0.3s ease; }
+        .match-text { font-size: 3rem; font-weight: 800; background: linear-gradient(135deg, #ff6b9d, #c44dff, #ff6b9d); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; animation: matchPop 0.5s ease; margin-bottom: 12px; letter-spacing: 2px; }
+        .match-subtext { color: rgba(255,255,255,0.5); font-size: 0.9rem; margin-bottom: 30px; font-weight: 300; }
+        .match-close { background: linear-gradient(135deg, #ff6b9d, #ff4081); color: white; border: none; padding: 14px 50px; border-radius: 30px; font-size: 0.95rem; font-weight: 600; cursor: pointer; box-shadow: 0 4px 30px rgba(255,107,157,0.4); font-family: 'Poppins', sans-serif; }
+        .empty-state { text-align: center; padding: 80px 30px; display: none; }
+        .empty-state.active { display: block; }
+        .empty-state h2 { font-size: 1.5rem; margin-bottom: 12px; background: linear-gradient(135deg, #ff6b9d, #c44dff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .empty-state p { color: #555; font-weight: 300; font-size: 0.9rem; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes matchPop { 0% { transform: scale(0.3); opacity: 0; } 50% { transform: scale(1.1); } 100% { transform: scale(1); opacity: 1; } }
+    </style>
+</head>
+<body>
+<div class="phone-frame">
+    <div class="status-bar">
+        <span class="time">9:41</span>
+        <div class="status-icons">
+            <svg width="16" height="12" viewBox="0 0 16 12" fill="white"><rect x="0" y="8" width="3" height="4" rx="0.5"/><rect x="4" y="5" width="3" height="7" rx="0.5"/><rect x="8" y="2" width="3" height="10" rx="0.5"/><rect x="12" y="0" width="3" height="12" rx="0.5"/></svg>
+            <svg width="22" height="11" viewBox="0 0 22 11" fill="none"><rect x="0.5" y="0.5" width="19" height="10" rx="2" stroke="white" stroke-opacity="0.4"/><rect x="2" y="2" width="14" height="7" rx="1" fill="#34C759"/><path d="M21 4v3a1.5 1.5 0 000-3z" fill="white" fill-opacity="0.4"/></svg>
+        </div>
+    </div>
+    <div class="nav-bar">
+        <div class="nav-logo">
+            <div class="heart-icon"><svg viewBox="0 0 36 36" fill="none"><defs><linearGradient id="hg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#ff6b9d"/><stop offset="100%" stop-color="#c44dff"/></linearGradient></defs><path d="M18 32s-1.5-1-3.5-2.7C7.5 23.5 3 19 3 13.5 3 9 6.5 5.5 11 5.5c2.5 0 5 1.3 7 3.8 2-2.5 4.5-3.8 7-3.8 4.5 0 8 3.5 8 8 0 5.5-4.5 10-11.5 15.8L18 32z" fill="url(#hg)"/></svg></div>
+            <span class="app-name">The CBS-elor</span>
+        </div>
+        <div class="nav-actions"><button class="nav-btn">&#9734;</button><button class="nav-btn">&#9776;</button></div>
+    </div>
+
+    <div class="view active" id="discoverView">
+        <div class="card-stack" id="cardStack"></div>
+        <div class="empty-state" id="emptyState"><h2>No More Matches!</h2><p>You've swiped through every MBA bro in Uris Hall. Time to try Wharton... just kidding.</p></div>
+        <div class="actions" id="actions">
+            <div class="action-btn btn-nope" onclick="swipeLeft()">&#10007;</div>
+            <div class="action-btn btn-super" onclick="superLike()">&#128293;</div>
+            <div class="action-btn btn-like" onclick="swipeRight()">&#10084;</div>
+        </div>
+        <div class="counter" id="counter"></div>
+    </div>
+
+    <div class="view" id="matchesView">
+        <div class="matches-view">
+            <div class="matches-header">Online Now</div>
+            <div class="online-row" id="onlineRow"></div>
+            <div class="matches-header">All Matches</div>
+            <div class="match-list" id="matchList"></div>
+        </div>
+    </div>
+
+    <div class="detail-view" id="detailView">
+        <button class="detail-back" onclick="closeDetail()">&#8249;</button>
+        <div class="detail-gallery" id="detailGallery"></div>
+        <div class="detail-gradient"></div>
+        <div class="detail-content">
+            <div class="detail-name-row">
+                <h2 id="detailName"></h2>
+                <span class="age" id="detailAge"></span>
+                <span class="verified">&#10003;</span>
+            </div>
+            <div class="detail-title" id="detailTitle"></div>
+            <div class="detail-bio" id="detailBio"></div>
+            <div class="detail-tags" id="detailTags"></div>
+            <div class="detail-actions">
+                <div class="action-btn btn-nope" onclick="closeDetail()" style="width:52px;height:52px;font-size:1.2rem;">&#10007;</div>
+                <div class="action-btn btn-super" onclick="closeDetail()" style="width:64px;height:64px;font-size:1.5rem;">&#128293;</div>
+                <div class="action-btn btn-like" onclick="closeDetail()" style="width:52px;height:52px;font-size:1.2rem;">&#10084;</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="bottom-nav">
+        <div class="bottom-nav-item active" onclick="switchView('discover')"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>Discover</div>
+        <div class="bottom-nav-item" onclick="switchView('matches')"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>Matches</div>
+        <div class="bottom-nav-item" onclick="switchView('discover')"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>Chats</div>
+        <div class="bottom-nav-item" onclick="switchView('discover')"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>Profile</div>
+    </div>
+</div>
+
+<div class="match-overlay" id="matchOverlay">
+    <div class="match-text">IT'S A MATCH!</div>
+    <div class="match-subtext" id="matchSubtext"></div>
+    <button class="match-close" onclick="closeMatch()">Keep Swiping</button>
+</div>
+
+<script>
+const profiles = [
+    { name: "Sergio", age: 27, images: ["Sarah.png","Sarah2.png","Sarah3.png"], title: "Pharma Bro @ Regeneron", bio: "A paradox in human form: will build a color-coded Excel model for our vacation itinerary but show up to the airport with his phone at 10% battery. Bougie king who orders the tasting menu but can't eat dairy unless you want biological warfare. Dog dad energy is STRONG. His bowel schedule is... unpredictable. Don't ask. Previously saved lives in Boston, now saving my GPA in Manhattanville. My love language is Phase III clinical trial results.", tags: ["Pharma", "Columbia MBA '26", "Dog Dad", "Lactose Intolerant"], preview: "Can you bring a charger? I'm at 8% 🪫" },
+    { name: "Nishant", age: 28, images: ["Nisha.png","Nisha2.png","Nisha3.png"], title: "VC Bro @ Mindspring Capital", bio: "5'2\" but carries himself like he's 6'5\" with a corner office. Total introvert until he decides he likes you, then suddenly he's the last one at the club at 3am asking where the after-party is. Always scouting the coolest new restaurant, bar, or travel destination. 10 years younger than his siblings. Yes, he was a surprise. The best accident since Post-it Notes. Hindi-speaking finance king. My due diligence on you starts with your credit score.", tags: ["Venture Capital", "Columbia MBA '26", "5'2\" King", "Surprise Baby"], preview: "Found this underground speakeasy, you in? 🍸" },
+    { name: "Brenda", age: 27, images: ["Brendan.png","Brendan2.png","Brendan3.png"], title: "The Only Bachelorette Here", bio: "Plot twist: the only actual woman in this lineup. Annoyingly good at literally everything. The kind of girl who's responsible, organized, has her life together, AND will still outrun you in a dead sprint after 6 tequila shots. Her vocabulary consists of the word 'addicted' — addicted to Sweetgreen, addicted to Peloton, addicted to running drunk through the streets at 2am. Biotech girlie who understands commercial strategy better than she understands men.", tags: ["Plot Twist", "Biotech", "Drunk Sprinter", "Addicted To Everything"], preview: "I'm literally addicted to this conversatio... 💅" },
+    { name: "Anik", age: 27, images: ["Annika.png","Annika2.png","Annika3.png"], title: "Pfizer's Finest MBA Intern", bio: "A walking United Nations — Chinese, white, Native American, Norwegian, and probably a few more he hasn't discovered yet. Family scattered across Scotland and Colorado because why pick one country? AVP of approximately 47 clubs at Columbia. Will take you skiing in Vail and then cook you a proper Norwegian salmon dinner. Eats fish like his ancestors demand it. My Google Cal is a war crime. Will plan our anniversary 11 months in advance and send you a deck about it.", tags: ["Pfizer", "Columbia MBA '26", "Club President x5", "Norwegian Salmon"], preview: "Sent you a calendar invite for drinks 📅" },
+    { name: "Kyle", age: 27, images: ["Kyra.png","Kyra2.png","Kyra3.png"], title: "Angel Investor Bro @ 37 Angels", bio: "Grew up in Darien, Connecticut, which is basically a personality trait. Has a boat on the lake because of course he does. Former JP Morgan Private Banker turned angel investor. Will casually invite you to 'come out on the boat this weekend' by your third message. Boat shoes are not ironic. If you can't handle me at my Innovation Expo, you don't deserve me at my after-party.", tags: ["Angel Investing", "Columbia MBA '26", "Darien CT", "Boat Owner"], preview: "Come out on the boat this weekend? ⛵" },
+    { name: "Colton", age: 27, images: ["Cole.png","Cole2.png","Cole3.png"], title: "SMU Engineer Turned MBA Bro", bio: "Will submit a flawless case study by 5pm and be face-down at the bar by 10pm. The duality of man. An absolute chatterbox who will tell you his entire life story before you've finished ordering. Definitely stuffing a sock down there for the profile pic — the confidence is... engineered. Went from Texas engineering to NYC finance because I enjoy paying 4x rent for half the space. Pony Up.", tags: ["SMU Engineering", "Columbia MBA '26", "Chatty King", "Texas Forever"], preview: "Y'all free this weekend? 🤠" },
+    { name: "Hans", age: 27, images: ["Hannah.png","Hannah2.png","Hannah3.png"], title: "Fertility Tech Bro @ Progyny", bio: "Classic chill dude who somehow makes zero effort look effortless. Sings in a band on weekends because apparently being a Dean's List MBA student wasn't enough personality. Southern boy from UGA who brought his front-porch energy to Manhattan. Will serenade you on the first date and you'll hate that you love it. Speaks enough Spanish to fumble through a tapas order. My idea of entrepreneurship is convincing my roommates to split a Costco membership.", tags: ["Progyny", "Columbia MBA '26", "Band Guy", "UGA Alum"], preview: "Want to split a Costco membership? 💍" },
+    { name: "Nico", age: 27, images: ["Nicole.png","Nicole2.png","Nicole3.png"], title: "Luxury Beds Bro @ Hastens", bio: "Korean king and absolute bundle of joy. Will order a slice of chocolate cake instead of a cocktail at the bar and somehow make it the most baller move in the room. Height requirement: you must be THIS tall to ride this ride. Hard pass on anyone whose hobbies include video games. If your Steam library has more hours than your gym membership, swipe left. Interned at Hastens selling luxury beds that cost more than your tuition. So yes, I know how to put you to sleep.", tags: ["Luxury Goods", "Columbia MBA '26", "No Gamers", "Cake > Cocktails"], preview: "I can sell you a $50k bed 🛏️" },
+    { name: "Noam", age: 28, images: ["Noam.png","Noam2.png","Noam3.png"], title: "Startup Bro @ Another", bio: "Israeli prince who went from Penn to Columbia because one Ivy wasn't enough for Daddy's money. Thinks a first-class pod on any flight is just a phone call to his father away. Raised $2.5M in seed funding, which honestly might just be his allowance rebranded. Works at a company called 'Another' — so yes, always someone's second choice but with a first-class budget. Fluent in Hebrew and corporate buzzwords. Swipe right for off-price romance.", tags: ["Startup Founder", "Columbia MBA '26", "Penn Alum", "Daddy's Money"], preview: "Just closed a round, let me take you out 💸" },
+    { name: "Heath", age: 27, images: ["Heather.png","Heather2.png","Heather3.png"], title: "Climate Bro @ Aspen Power", bio: "Went to Ransom Everglades in Miami but will absolutely lose it if you call him a prep school rich kid. 'I'm not rich, my parents just valued education.' Sure, Heath. Jewish but you'd never guess it — looks like he walked out of a Patagonia catalog. Three Cairns Fellow + Forte Fellow because one fellowship wasn't enough for my LinkedIn headline. Let's geothermal and chill. My love language is carbon offsets.", tags: ["Clean Energy", "Columbia MBA '26", "Not A Rich Kid™", "Two Fellowships"], preview: "Let's geothermal and chill 🌍" },
+    { name: "Brian", age: 27, images: ["Bri.png","Bri2.png","Bri3.png"], title: "Wisconsin's Finest Export", bio: "From the middle of absolute nowhere, Wisconsin. The kind of guy who's so genuinely nice that it's suspicious. Zero drama, zero pretension, 100% will outdrink everyone at the table and still be the most pleasant person in the room. Moved to NYC and immediately became the friend everyone calls when they need a chill hangout. Will bring you a beer before you even ask.", tags: ["Columbia MBA '26", "Wisconsin", "Nice Guy (Real)", "Beer Expert"], preview: "Let's circle back on dinner plans 🍝" }
+];
+
+const timeLabels = ["2m ago","5m ago","12m ago","28m ago","1h ago","2h ago","3h ago","Yesterday","Yesterday","2d ago","3d ago"];
+const discoverOrder = [...profiles];
+for (let i = discoverOrder.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [discoverOrder[i], discoverOrder[j]] = [discoverOrder[j], discoverOrder[i]]; }
+
+let currentIndex = 0, startX = 0, currentX = 0, isDragging = false;
+const cardPhotoIndex = {};
+
+function switchView(view) {
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    document.querySelectorAll('.bottom-nav-item').forEach(n => n.classList.remove('active'));
+    if (view === 'discover') { document.getElementById('discoverView').classList.add('active'); document.querySelectorAll('.bottom-nav-item')[0].classList.add('active'); }
+    else if (view === 'matches') { document.getElementById('matchesView').classList.add('active'); document.querySelectorAll('.bottom-nav-item')[1].classList.add('active'); renderMatches(); }
+    document.getElementById('detailView').classList.remove('active');
+}
+
+function renderMatches() {
+    document.getElementById('onlineRow').innerHTML = profiles.slice(0, 6).map(p =>
+        `<div class="online-item" onclick="openDetail(${profiles.indexOf(p)})"><div class="online-dot"><img class="online-avatar" src="${p.images[0]}" alt="${p.name}"></div><span class="online-name">${p.name}</span></div>`
+    ).join('');
+    document.getElementById('matchList').innerHTML = profiles.map((p, i) =>
+        `<div class="match-item" onclick="openDetail(${i})"><img class="match-avatar" src="${p.images[0]}" alt="${p.name}"><div class="match-info"><div class="match-name-row"><span class="match-name">${p.name}, ${p.age}</span><span class="match-time">${timeLabels[i]}</span></div><div class="match-preview">${p.preview}</div></div>${Math.random()>0.6?`<div class="match-badge">${Math.floor(Math.random()*5)+1}</div>`:''}</div>`
+    ).join('');
+}
+
+// ─── Detail View ───
+let detailPhotoIdx = 0, detailImages = [];
+function openDetail(index) {
+    const p = profiles[index]; detailImages = p.images; detailPhotoIdx = 0;
+    const g = document.getElementById('detailGallery');
+    g.innerHTML = `<div class="detail-dots">${detailImages.map((_,i) => `<div class="detail-dot-bar${i===0?' active-dot':''}"></div>`).join('')}</div>`
+        + detailImages.map((img,i) => `<img src="${img}" alt="Photo ${i+1}" class="${i===0?'active-photo':''}" draggable="false">`).join('')
+        + `<div class="detail-tap-zones"><div class="detail-tap-left" onclick="detailPrev()"></div><div class="detail-tap-right" onclick="detailNext()"></div></div>`;
+    document.getElementById('detailName').textContent = p.name;
+    document.getElementById('detailAge').textContent = p.age;
+    document.getElementById('detailTitle').textContent = p.title;
+    document.getElementById('detailBio').textContent = p.bio;
+    document.getElementById('detailTags').innerHTML = p.tags.map(t => `<span class="detail-tag">${t}</span>`).join('');
+    const dv = document.getElementById('detailView');
+    dv.classList.add('active');
+    dv.scrollTop = 0;
+}
+function detailNext() { if (detailPhotoIdx < detailImages.length - 1) { detailPhotoIdx++; updateDetailPhoto(); } }
+function detailPrev() { if (detailPhotoIdx > 0) { detailPhotoIdx--; updateDetailPhoto(); } }
+function updateDetailPhoto() {
+    const g = document.getElementById('detailGallery');
+    g.querySelectorAll('img').forEach((img,i) => img.classList.toggle('active-photo', i===detailPhotoIdx));
+    g.querySelectorAll('.detail-dot-bar').forEach((d,i) => d.classList.toggle('active-dot', i===detailPhotoIdx));
+}
+function closeDetail() { document.getElementById('detailView').classList.remove('active'); }
+
+// Open detail from discover card (tap bottom name area)
+function openDiscoverDetail() {
+    const p = discoverOrder[currentIndex];
+    const idx = profiles.indexOf(p);
+    openDetail(idx);
+}
+
+// ─── Discover Cards ───
+function renderCards() {
+    const stack = document.getElementById('cardStack'); stack.innerHTML = '';
+    const remaining = discoverOrder.length - currentIndex;
+    if (remaining <= 0) { document.getElementById('emptyState').classList.add('active'); document.getElementById('actions').style.display='none'; document.getElementById('counter').textContent=''; return; }
+    document.getElementById('counter').textContent = `${currentIndex+1} of ${discoverOrder.length}`;
+    const show = Math.min(3, remaining);
+    for (let i = show-1; i >= 0; i--) {
+        const p = discoverOrder[currentIndex+i], key = currentIndex+i;
+        if (!(key in cardPhotoIndex)) cardPhotoIndex[key] = 0;
+        const pIdx = cardPhotoIndex[key];
+        const card = document.createElement('div');
+        card.className = 'profile-card'; card.dataset.cardKey = key;
+        card.style.transform = `scale(${1-i*0.04}) translateY(${i*10}px)`; card.style.zIndex = show-i;
+        if (i > 0) card.style.filter = `brightness(${1-i*0.12})`;
+
+        card.innerHTML = `
+            <div class="swipe-indicator like">LIKE</div><div class="swipe-indicator nope">NOPE</div>
+            <div class="photo-gallery">
+                <div class="photo-dots">${p.images.map((_,j) => `<div class="photo-dot${j===pIdx?' active-dot':''}"></div>`).join('')}</div>
+                ${p.images.map((img,j) => `<img src="${img}" alt="${p.name}" class="${j===pIdx?'active-photo':''}" draggable="false">`).join('')}
+                <div class="photo-tap-zones"><div class="photo-tap-left" data-card-key="${key}" data-dir="prev"></div><div class="photo-tap-right" data-card-key="${key}" data-dir="next"></div></div>
+            </div>
+            <div class="card-name-overlay" onclick="openDiscoverDetail()">
+                <div class="card-name-row"><h2>${p.name}</h2><span class="age">${p.age}</span><span class="verified">&#10003;</span></div>
+                <div class="card-title">${p.title}</div>
+                <div class="card-expand-hint"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg> Tap for full profile</div>
+            </div>`;
+        if (i === 0) setupDrag(card);
+        stack.appendChild(card);
+    }
+    document.querySelectorAll('.photo-tap-left, .photo-tap-right').forEach(el => {
+        el.addEventListener('click', e => {
+            e.stopPropagation();
+            const key = parseInt(el.dataset.cardKey), p = discoverOrder[key]; if (!p) return;
+            if (el.dataset.dir === 'next' && cardPhotoIndex[key] < p.images.length-1) cardPhotoIndex[key]++;
+            else if (el.dataset.dir === 'prev' && cardPhotoIndex[key] > 0) cardPhotoIndex[key]--;
+            updateCardPhoto(key);
+        });
+    });
+}
+function updateCardPhoto(key) {
+    const card = document.querySelector(`.profile-card[data-card-key="${key}"]`); if (!card) return;
+    const idx = cardPhotoIndex[key];
+    card.querySelectorAll('.photo-gallery img').forEach((img,i) => img.classList.toggle('active-photo', i===idx));
+    card.querySelectorAll('.photo-dot').forEach((d,i) => d.classList.toggle('active-dot', i===idx));
+}
+function setupDrag(card) {
+    card.addEventListener('pointerdown', e => {
+        if (e.target.closest('.photo-tap-left, .photo-tap-right, .card-name-overlay')) return;
+        isDragging = true; startX = e.clientX; card.style.transition = 'none'; card.setPointerCapture(e.pointerId);
+    });
+    card.addEventListener('pointermove', e => {
+        if (!isDragging) return; currentX = e.clientX - startX;
+        if (Math.abs(currentX) < 5) return;
+        card.style.transform = `translateX(${currentX}px) rotate(${currentX*0.07}deg)`;
+        card.querySelector('.swipe-indicator.like').style.opacity = currentX > 60 ? Math.min((currentX-60)/80,1) : 0;
+        card.querySelector('.swipe-indicator.nope').style.opacity = currentX < -60 ? Math.min((-currentX-60)/80,1) : 0;
+    });
+    card.addEventListener('pointerup', () => {
+        if (!isDragging) return; isDragging = false;
+        card.style.transition = 'transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)';
+        if (currentX > 100) { card.classList.add('swiping-right'); handleSwipe('right'); }
+        else if (currentX < -100) { card.classList.add('swiping-left'); handleSwipe('left'); }
+        else card.style.transform = '';
+        currentX = 0;
+    });
+}
+function handleSwipe(dir) {
+    if (dir === 'right' && Math.random() > 0.5) setTimeout(() => showMatch(discoverOrder[currentIndex].name), 400);
+    setTimeout(() => { currentIndex++; renderCards(); }, 500);
+}
+function swipeLeft() { const t = document.querySelector('.card-stack').lastElementChild; if (t) { t.classList.add('swiping-left'); handleSwipe('left'); } }
+function swipeRight() { const t = document.querySelector('.card-stack').lastElementChild; if (t) { t.classList.add('swiping-right'); handleSwipe('right'); } }
+function superLike() {
+    const t = document.querySelector('.card-stack').lastElementChild;
+    if (t) { t.style.transition='transform 0.5s ease, opacity 0.5s ease'; t.style.transform='translateY(-150%) scale(1.1)'; t.style.opacity='0';
+        setTimeout(() => showMatch(discoverOrder[currentIndex].name), 300); setTimeout(() => { currentIndex++; renderCards(); }, 500); }
+}
+function showMatch(name) { document.getElementById('matchSubtext').textContent=`You and ${name} both swiped right!`; document.getElementById('matchOverlay').classList.add('active'); }
+function closeMatch() { document.getElementById('matchOverlay').classList.remove('active'); }
+renderCards();
+</script>
+</body>
+</html>
