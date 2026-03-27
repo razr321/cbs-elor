@@ -134,6 +134,29 @@
         .bottom-nav-item.active { color: #ff6b9d; }
         .bottom-nav-item svg { width: 22px; height: 22px; }
 
+        /* ══ PROFILE PAGE ══ */
+        .profile-page { overflow-y: auto; flex: 1; }
+        .profile-photo-wrap { width: 100%; height: 360px; position: relative; overflow: hidden; }
+        .profile-photo-wrap img { width: 100%; height: 100%; object-fit: cover; object-position: top center; transition: opacity 0.35s ease; }
+        .profile-photo-dots { position: absolute; top: 10px; left: 16px; right: 16px; display: flex; gap: 4px; z-index: 4; }
+        .profile-photo-taps { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 3; display: flex; }
+        .profile-photo-taps .photo-tap-left, .profile-photo-taps .photo-tap-right { flex: 1; cursor: pointer; }
+        .profile-page-content { padding: 20px 24px 30px; position: relative; margin-top: -40px; z-index: 5; background: linear-gradient(to bottom, transparent 0%, #111 30px); padding-top: 50px; }
+        .profile-page-name-row { display: flex; align-items: center; margin-bottom: 4px; }
+        .profile-page-name-row h2 { font-size: 1.8rem; font-weight: 700; }
+        .profile-page-name-row .age { font-size: 1.2rem; color: rgba(255,255,255,0.6); margin-left: 10px; }
+        .profile-page-name-row .verified { width: 22px; height: 22px; font-size: 0.65rem; }
+        .profile-page-title { font-size: 0.8rem; color: #ff6b9d; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 14px; }
+        .profile-page-bio { font-size: 0.88rem; line-height: 1.65; color: rgba(255,255,255,0.6); font-weight: 300; margin-bottom: 18px; }
+        .profile-page-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; }
+        .profile-page-tags .detail-tag { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); color: rgba(255,255,255,0.8); padding: 8px 18px; border-radius: 24px; font-size: 0.78rem; font-weight: 500; }
+        .profile-page-stats { display: flex; justify-content: space-around; padding: 20px 0; margin-bottom: 16px; border-top: 1px solid rgba(255,255,255,0.08); border-bottom: 1px solid rgba(255,255,255,0.08); }
+        .stat-item { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+        .stat-num { font-size: 1.4rem; font-weight: 700; background: linear-gradient(135deg, #ff6b9d, #c44dff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .stat-label { font-size: 0.7rem; color: #666; font-weight: 500; text-transform: uppercase; letter-spacing: 1px; }
+        .edit-profile-btn { width: 100%; padding: 14px; border-radius: 30px; border: 1px solid rgba(255,255,255,0.15); background: transparent; color: #fff; font-family: 'Poppins', sans-serif; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+        .edit-profile-btn:hover { background: rgba(255,255,255,0.05); }
+
         /* Match Overlay */
         .match-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.92); display: none; align-items: center; justify-content: center; z-index: 100; flex-direction: column; }
         .match-overlay.active { display: flex; animation: fadeIn 0.3s ease; }
@@ -206,11 +229,41 @@
         </div>
     </div>
 
+    <!-- ═══ PROFILE VIEW ═══ -->
+    <div class="view" id="profileView">
+        <div class="profile-page">
+            <div class="profile-photo-wrap">
+                <img id="myProfilePhoto" src="" alt="My Profile">
+                <div class="profile-photo-dots" id="myProfileDots"></div>
+                <div class="profile-photo-taps">
+                    <div class="photo-tap-left" onclick="myProfilePrev()"></div>
+                    <div class="photo-tap-right" onclick="myProfileNext()"></div>
+                </div>
+            </div>
+            <div class="profile-page-content">
+                <div class="profile-page-name-row">
+                    <h2 id="myProfileName"></h2>
+                    <span class="age" id="myProfileAge"></span>
+                    <span class="verified">&#10003;</span>
+                </div>
+                <div class="profile-page-title" id="myProfileTitle"></div>
+                <div class="profile-page-bio" id="myProfileBio"></div>
+                <div class="profile-page-tags" id="myProfileTags"></div>
+                <div class="profile-page-stats">
+                    <div class="stat-item"><span class="stat-num">142</span><span class="stat-label">Likes</span></div>
+                    <div class="stat-item"><span class="stat-num">38</span><span class="stat-label">Matches</span></div>
+                    <div class="stat-item"><span class="stat-num">12</span><span class="stat-label">Dates</span></div>
+                </div>
+                <button class="edit-profile-btn">Edit Profile</button>
+            </div>
+        </div>
+    </div>
+
     <div class="bottom-nav">
         <div class="bottom-nav-item active" onclick="switchView('discover')"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>Discover</div>
         <div class="bottom-nav-item" onclick="switchView('matches')"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>Matches</div>
         <div class="bottom-nav-item" onclick="switchView('discover')"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>Chats</div>
-        <div class="bottom-nav-item" onclick="switchView('discover')"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>Profile</div>
+        <div class="bottom-nav-item" onclick="switchView('profile')"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>Profile</div>
     </div>
 </div>
 
@@ -221,9 +274,11 @@
 </div>
 
 <script>
+// ─── My Profile (Nishant) ───
+const myProfile = { name: "Nishant", age: 28, images: ["Nisha.png","Nisha2.png","Nisha3.png"], title: "VC Bro @ Mindspring Capital", bio: "5'2\" but carries himself like he's 6'5\" with a corner office. Total introvert until he decides he likes you, then suddenly he's the last one at the club at 3am asking where the after-party is. Always scouting the coolest new restaurant, bar, or travel destination. 10 years younger than his siblings. Yes, he was a surprise. The best accident since Post-it Notes. Hindi-speaking finance king. My due diligence on you starts with your credit score.", tags: ["Venture Capital", "Columbia MBA '26", "5'2\" King", "Surprise Baby"] };
+
 const profiles = [
     { name: "Sergio", age: 27, images: ["Sarah.png","Sarah2.png","Sarah3.png"], title: "Pharma Bro @ Regeneron", bio: "A paradox in human form: will build a color-coded Excel model for our vacation itinerary but show up to the airport with his phone at 10% battery. Bougie king who orders the tasting menu but can't eat dairy unless you want biological warfare. Dog dad energy is STRONG. His bowel schedule is... unpredictable. Don't ask. Previously saved lives in Boston, now saving my GPA in Manhattanville. My love language is Phase III clinical trial results.", tags: ["Pharma", "Columbia MBA '26", "Dog Dad", "Lactose Intolerant"], preview: "Can you bring a charger? I'm at 8% 🪫" },
-    { name: "Nishant", age: 28, images: ["Nisha.png","Nisha2.png","Nisha3.png"], title: "VC Bro @ Mindspring Capital", bio: "5'2\" but carries himself like he's 6'5\" with a corner office. Total introvert until he decides he likes you, then suddenly he's the last one at the club at 3am asking where the after-party is. Always scouting the coolest new restaurant, bar, or travel destination. 10 years younger than his siblings. Yes, he was a surprise. The best accident since Post-it Notes. Hindi-speaking finance king. My due diligence on you starts with your credit score.", tags: ["Venture Capital", "Columbia MBA '26", "5'2\" King", "Surprise Baby"], preview: "Found this underground speakeasy, you in? 🍸" },
     { name: "Brenda", age: 27, images: ["Brendan.png","Brendan2.png","Brendan3.png"], title: "The Only Bachelorette Here", bio: "Plot twist: the only actual woman in this lineup. Annoyingly good at literally everything. The kind of girl who's responsible, organized, has her life together, AND will still outrun you in a dead sprint after 6 tequila shots. Her vocabulary consists of the word 'addicted' — addicted to Sweetgreen, addicted to Peloton, addicted to running drunk through the streets at 2am. Biotech girlie who understands commercial strategy better than she understands men.", tags: ["Plot Twist", "Biotech", "Drunk Sprinter", "Addicted To Everything"], preview: "I'm literally addicted to this conversatio... 💅" },
     { name: "Anik", age: 27, images: ["Annika.png","Annika2.png","Annika3.png"], title: "Pfizer's Finest MBA Intern", bio: "A walking United Nations — Chinese, white, Native American, Norwegian, and probably a few more he hasn't discovered yet. Family scattered across Scotland and Colorado because why pick one country? AVP of approximately 47 clubs at Columbia. Will take you skiing in Vail and then cook you a proper Norwegian salmon dinner. Eats fish like his ancestors demand it. My Google Cal is a war crime. Will plan our anniversary 11 months in advance and send you a deck about it.", tags: ["Pfizer", "Columbia MBA '26", "Club President x5", "Norwegian Salmon"], preview: "Sent you a calendar invite for drinks 📅" },
     { name: "Kyle", age: 27, images: ["Kyra.png","Kyra2.png","Kyra3.png"], title: "Angel Investor Bro @ 37 Angels", bio: "Grew up in Darien, Connecticut, which is basically a personality trait. Has a boat on the lake because of course he does. Former JP Morgan Private Banker turned angel investor. Will casually invite you to 'come out on the boat this weekend' by your third message. Boat shoes are not ironic. If you can't handle me at my Innovation Expo, you don't deserve me at my after-party.", tags: ["Angel Investing", "Columbia MBA '26", "Darien CT", "Boat Owner"], preview: "Come out on the boat this weekend? ⛵" },
@@ -235,7 +290,7 @@ const profiles = [
     { name: "Brian", age: 27, images: ["Bri.png","Bri2.png","Bri3.png"], title: "Wisconsin's Finest Export", bio: "From the middle of absolute nowhere, Wisconsin. The kind of guy who's so genuinely nice that it's suspicious. Zero drama, zero pretension, 100% will outdrink everyone at the table and still be the most pleasant person in the room. Moved to NYC and immediately became the friend everyone calls when they need a chill hangout. Will bring you a beer before you even ask.", tags: ["Columbia MBA '26", "Wisconsin", "Nice Guy (Real)", "Beer Expert"], preview: "Let's circle back on dinner plans 🍝" }
 ];
 
-const timeLabels = ["2m ago","5m ago","12m ago","28m ago","1h ago","2h ago","3h ago","Yesterday","Yesterday","2d ago","3d ago"];
+const timeLabels = ["2m ago","5m ago","12m ago","28m ago","1h ago","2h ago","3h ago","Yesterday","2d ago","3d ago"];
 const discoverOrder = [...profiles];
 for (let i = discoverOrder.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [discoverOrder[i], discoverOrder[j]] = [discoverOrder[j], discoverOrder[i]]; }
 
@@ -245,9 +300,35 @@ const cardPhotoIndex = {};
 function switchView(view) {
     document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
     document.querySelectorAll('.bottom-nav-item').forEach(n => n.classList.remove('active'));
+    document.getElementById('detailView').classList.remove('active');
     if (view === 'discover') { document.getElementById('discoverView').classList.add('active'); document.querySelectorAll('.bottom-nav-item')[0].classList.add('active'); }
     else if (view === 'matches') { document.getElementById('matchesView').classList.add('active'); document.querySelectorAll('.bottom-nav-item')[1].classList.add('active'); renderMatches(); }
-    document.getElementById('detailView').classList.remove('active');
+    else if (view === 'profile') { document.getElementById('profileView').classList.add('active'); document.querySelectorAll('.bottom-nav-item')[3].classList.add('active'); renderMyProfile(); }
+}
+
+// ─── My Profile Page ───
+let myProfilePhotoIdx = 0;
+function renderMyProfile() {
+    const p = myProfile;
+    myProfilePhotoIdx = 0;
+    document.getElementById('myProfilePhoto').src = p.images[0];
+    document.getElementById('myProfileDots').innerHTML = p.images.map((_,i) => `<div class="photo-dot${i===0?' active-dot':''}" style="flex:1;height:3px;border-radius:2px;background:${i===0?'rgba(255,255,255,0.95)':'rgba(255,255,255,0.3)'};transition:background 0.3s;"></div>`).join('');
+    document.getElementById('myProfileName').textContent = p.name;
+    document.getElementById('myProfileAge').textContent = p.age;
+    document.getElementById('myProfileTitle').textContent = p.title;
+    document.getElementById('myProfileBio').textContent = p.bio;
+    document.getElementById('myProfileTags').innerHTML = p.tags.map(t => `<span class="detail-tag">${t}</span>`).join('');
+}
+function myProfileNext() {
+    if (myProfilePhotoIdx < myProfile.images.length - 1) { myProfilePhotoIdx++; updateMyProfilePhoto(); }
+}
+function myProfilePrev() {
+    if (myProfilePhotoIdx > 0) { myProfilePhotoIdx--; updateMyProfilePhoto(); }
+}
+function updateMyProfilePhoto() {
+    document.getElementById('myProfilePhoto').src = myProfile.images[myProfilePhotoIdx];
+    const dots = document.getElementById('myProfileDots').children;
+    for (let i = 0; i < dots.length; i++) { dots[i].style.background = i === myProfilePhotoIdx ? 'rgba(255,255,255,0.95)' : 'rgba(255,255,255,0.3)'; }
 }
 
 function renderMatches() {
