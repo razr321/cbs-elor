@@ -134,6 +134,59 @@
         .bottom-nav-item.active { color: #ff6b9d; }
         .bottom-nav-item svg { width: 22px; height: 22px; }
 
+        /* ══ GAMES ══ */
+        .games-menu { padding: 20px 16px; overflow-y: auto; flex: 1; }
+        .games-title { font-size: 1.5rem; font-weight: 700; margin-bottom: 4px; }
+        .games-subtitle { font-size: 0.8rem; color: #666; font-weight: 300; margin-bottom: 24px; }
+        .game-card { display: flex; align-items: center; gap: 16px; padding: 18px 16px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; margin-bottom: 12px; cursor: pointer; transition: all 0.2s; }
+        .game-card:hover { background: rgba(255,255,255,0.07); transform: translateY(-1px); }
+        .game-card-icon { font-size: 2rem; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; background: rgba(255,107,157,0.1); border-radius: 14px; flex-shrink: 0; }
+        .game-card-info { flex: 1; }
+        .game-card-name { font-size: 0.95rem; font-weight: 600; margin-bottom: 3px; }
+        .game-card-desc { font-size: 0.72rem; color: #777; font-weight: 300; line-height: 1.4; }
+        .game-card-arrow { color: #555; font-size: 1.4rem; }
+        .game-active { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        .game-header { display: flex; align-items: center; padding: 12px 16px; gap: 12px; flex-shrink: 0; }
+        .game-back-btn { width: 32px; height: 32px; border-radius: 50%; background: rgba(255,255,255,0.08); border: none; color: #fff; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+        .game-header-title { font-size: 1rem; font-weight: 600; flex: 1; }
+        .game-header-count { font-size: 0.75rem; color: #666; }
+        .game-content { flex: 1; overflow-y: auto; padding: 0 16px 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+
+        /* Game Cards */
+        .g-card { width: 100%; max-width: 350px; background: #1a1a1a; border-radius: 20px; overflow: hidden; box-shadow: 0 8px 30px rgba(0,0,0,0.4); }
+        .g-card-photo { display: flex; align-items: center; gap: 14px; padding: 16px 18px; background: rgba(255,255,255,0.03); }
+        .g-card-photo img { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; object-position: top center; }
+        .g-card-photo-name { font-size: 1rem; font-weight: 600; }
+        .g-card-photo-title { font-size: 0.68rem; color: #ff6b9d; font-weight: 500; }
+        .g-card-body { padding: 20px 20px 24px; text-align: center; }
+        .g-card-text { font-size: 1.05rem; font-weight: 500; line-height: 1.6; margin-bottom: 20px; color: rgba(255,255,255,0.85); }
+        .g-card-label { font-size: 0.65rem; color: #666; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 10px; }
+
+        /* Game Buttons */
+        .g-btns { display: flex; gap: 12px; justify-content: center; width: 100%; margin-top: 16px; }
+        .g-btn { flex: 1; max-width: 160px; padding: 14px 10px; border-radius: 14px; border: none; font-family: 'Poppins',sans-serif; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+        .g-btn:active { transform: scale(0.95); }
+        .g-btn-pink { background: linear-gradient(135deg, #ff6b9d, #ff4081); color: white; box-shadow: 0 4px 20px rgba(255,107,157,0.3); }
+        .g-btn-dark { background: #1e1e1e; color: #888; }
+        .g-btn-green { background: linear-gradient(135deg, #22c55e, #16a34a); color: white; box-shadow: 0 4px 20px rgba(34,197,94,0.3); }
+        .g-btn-red { background: linear-gradient(135deg, #ef4444, #dc2626); color: white; box-shadow: 0 4px 20px rgba(239,68,68,0.3); }
+
+        /* Two Truths options */
+        .g-option { width: 100%; padding: 14px 18px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; margin-bottom: 8px; cursor: pointer; text-align: left; font-family: 'Poppins',sans-serif; font-size: 0.85rem; color: rgba(255,255,255,0.8); font-weight: 400; transition: all 0.2s; }
+        .g-option:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.2); }
+        .g-option.correct { background: rgba(34,197,94,0.15); border-color: #22c55e; color: #22c55e; }
+        .g-option.wrong { background: rgba(239,68,68,0.15); border-color: #ef4444; color: #ef4444; }
+
+        /* Most Likely To vote grid */
+        .g-vote-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; width: 100%; margin-top: 10px; }
+        .g-vote-item { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 12px 6px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; cursor: pointer; transition: all 0.2s; }
+        .g-vote-item:hover { background: rgba(255,107,157,0.1); border-color: rgba(255,107,157,0.3); }
+        .g-vote-item.voted { background: rgba(255,107,157,0.15); border-color: #ff6b9d; }
+        .g-vote-item img { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; object-position: top center; }
+        .g-vote-item span { font-size: 0.65rem; color: #aaa; font-weight: 500; }
+
+        .g-next-btn { margin-top: 20px; padding: 12px 40px; border-radius: 30px; border: none; background: linear-gradient(135deg, #ff6b9d, #ff4081); color: white; font-family: 'Poppins',sans-serif; font-size: 0.85rem; font-weight: 600; cursor: pointer; box-shadow: 0 4px 20px rgba(255,107,157,0.3); }
+
         /* ══ PROFILE PAGE ══ */
         .profile-page { overflow-y: auto; flex: 1; }
         .profile-photo-wrap { width: 100%; height: 360px; position: relative; overflow: hidden; }
@@ -229,6 +282,56 @@
         </div>
     </div>
 
+    <!-- ═══ GAMES VIEW ═══ -->
+    <div class="view" id="gamesView">
+        <!-- Games Menu -->
+        <div class="games-menu" id="gamesMenu">
+            <div class="games-title">Game Night</div>
+            <div class="games-subtitle">Pick a game to play with your matches</div>
+            <div class="game-card" onclick="startGame('hotTakes')">
+                <div class="game-card-icon">🔥</div>
+                <div class="game-card-info">
+                    <div class="game-card-name">Hot Takes</div>
+                    <div class="game-card-desc">Swipe agree or disagree on spicy opinions about each person</div>
+                </div>
+                <div class="game-card-arrow">&#8250;</div>
+            </div>
+            <div class="game-card" onclick="startGame('truthDare')">
+                <div class="game-card-icon">🎲</div>
+                <div class="game-card-info">
+                    <div class="game-card-name">Truth or Dare</div>
+                    <div class="game-card-desc">Personalized truths and dares for each MBA bro</div>
+                </div>
+                <div class="game-card-arrow">&#8250;</div>
+            </div>
+            <div class="game-card" onclick="startGame('twoTruths')">
+                <div class="game-card-icon">🤥</div>
+                <div class="game-card-info">
+                    <div class="game-card-name">Two Truths & A Lie</div>
+                    <div class="game-card-desc">Guess which statement about each person is fake</div>
+                </div>
+                <div class="game-card-arrow">&#8250;</div>
+            </div>
+            <div class="game-card" onclick="startGame('mostLikely')">
+                <div class="game-card-icon">👑</div>
+                <div class="game-card-info">
+                    <div class="game-card-name">Most Likely To...</div>
+                    <div class="game-card-desc">Vote on who in the group fits each scenario</div>
+                </div>
+                <div class="game-card-arrow">&#8250;</div>
+            </div>
+        </div>
+        <!-- Active Game Area -->
+        <div class="game-active" id="gameActive" style="display:none;">
+            <div class="game-header">
+                <button class="game-back-btn" onclick="backToGamesMenu()">&#8249;</button>
+                <span class="game-header-title" id="gameHeaderTitle"></span>
+                <span class="game-header-count" id="gameHeaderCount"></span>
+            </div>
+            <div class="game-content" id="gameContent"></div>
+        </div>
+    </div>
+
     <!-- ═══ PROFILE VIEW ═══ -->
     <div class="view" id="profileView">
         <div class="profile-page">
@@ -262,7 +365,7 @@
     <div class="bottom-nav">
         <div class="bottom-nav-item active" onclick="switchView('discover')"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>Discover</div>
         <div class="bottom-nav-item" onclick="switchView('matches')"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>Matches</div>
-        <div class="bottom-nav-item" onclick="switchView('discover')"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>Chats</div>
+        <div class="bottom-nav-item" onclick="switchView('games')"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M21 6H3c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-10 7H8v3H6v-3H3v-2h3V8h2v3h3v2zm4.5 2c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm4-3c-.83 0-1.5-.67-1.5-1.5S18.67 9 19.5 9s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>Games</div>
         <div class="bottom-nav-item" onclick="switchView('profile')"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>Profile</div>
     </div>
 </div>
@@ -303,6 +406,7 @@ function switchView(view) {
     document.getElementById('detailView').classList.remove('active');
     if (view === 'discover') { document.getElementById('discoverView').classList.add('active'); document.querySelectorAll('.bottom-nav-item')[0].classList.add('active'); }
     else if (view === 'matches') { document.getElementById('matchesView').classList.add('active'); document.querySelectorAll('.bottom-nav-item')[1].classList.add('active'); renderMatches(); }
+    else if (view === 'games') { document.getElementById('gamesView').classList.add('active'); document.querySelectorAll('.bottom-nav-item')[2].classList.add('active'); backToGamesMenu(); }
     else if (view === 'profile') { document.getElementById('profileView').classList.add('active'); document.querySelectorAll('.bottom-nav-item')[3].classList.add('active'); renderMyProfile(); }
 }
 
@@ -455,6 +559,179 @@ function superLike() {
 function showMatch(name) { document.getElementById('matchSubtext').textContent=`You and ${name} both swiped right!`; document.getElementById('matchOverlay').classList.add('active'); }
 function closeMatch() { document.getElementById('matchOverlay').classList.remove('active'); }
 renderCards();
+
+// ═══════════════════════════
+// GAMES
+// ═══════════════════════════
+function backToGamesMenu() {
+    document.getElementById('gamesMenu').style.display = '';
+    document.getElementById('gameActive').style.display = 'none';
+}
+
+let gameIdx = 0;
+
+// ─── HOT TAKES ───
+const hotTakes = [
+    { person: "Kyle", img: "Kyra.png", take: "Darien, CT is the most interesting town in America" },
+    { person: "Noam", img: "Noam.png", take: "First class is a basic human right, not a luxury" },
+    { person: "Heath", img: "Heather.png", take: "People who use plastic straws should be expelled from MBA programs" },
+    { person: "Colton", img: "Cole.png", take: "Texas BBQ is the only valid cuisine. Everything else is just decoration" },
+    { person: "Brenda", img: "Brendan.png", take: "Drunk sprinting is a legitimate form of cardio" },
+    { person: "Nico", img: "Nicole.png", take: "Video games are an automatic red flag. No exceptions" },
+    { person: "Hans", img: "Hannah.png", take: "Splitting a Costco membership is more intimate than marriage" },
+    { person: "Nishant", img: "Nisha.png", take: "Being 5'2\" is an advantage because you save money on legroom upgrades" },
+    { person: "Anik", img: "Annika.png", take: "If you're not in at least 5 clubs, are you even doing your MBA?" },
+    { person: "Brian", img: "Bri.png", take: "Wisconsin could beat New York in a drinking competition any day of the week" },
+    { person: "Noam", img: "Noam.png", take: "Penn is a better school than Columbia. I said what I said" },
+    { person: "Kyle", img: "Kyra.png", take: "If you don't own a boat by 27, what are you even doing?" },
+    { person: "Heath", img: "Heather.png", take: "Ransom Everglades is NOT a prep school. It's a college-preparatory institution. There's a difference" },
+    { person: "Colton", img: "Cole.png", take: "The sock stays on during the date" },
+    { person: "Brenda", img: "Brendan.png", take: "Being addicted to things is actually a sign of passion, not a problem" },
+];
+
+const truthDares = [
+    { person: "Colton", img: "Cole.png", truth: "What's REALLY stuffed in those pants?", dare: "Text your ex 'Pony Up' with zero context" },
+    { person: "Brenda", img: "Brendan.png", truth: "What are you addicted to RIGHT now? Be honest", dare: "Sprint to the end of the bar and back. Take a shot first" },
+    { person: "Kyle", img: "Kyra.png", truth: "How much did the boat actually cost?", dare: "Invite everyone here onto the boat this weekend via group text" },
+    { person: "Noam", img: "Noam.png", truth: "When's the last time you flew economy?", dare: "Call your dad and ask for a 'small loan' on speaker" },
+    { person: "Heath", img: "Heather.png", truth: "How much was Ransom Everglades tuition? Be specific", dare: "Use a plastic straw for the rest of the night" },
+    { person: "Nico", img: "Nicole.png", truth: "What's the most expensive bed you've ever slept in?", dare: "Order chocolate cake at the bar right now instead of a drink" },
+    { person: "Hans", img: "Hannah.png", truth: "Sing us 8 bars of your band's best song. Right now", dare: "Serenade the bartender with a love song" },
+    { person: "Nishant", img: "Nisha.png", truth: "Were you actually planned? Ask your mom on speaker", dare: "Stand on a chair and act like you're 6'5\" for 60 seconds" },
+    { person: "Anik", img: "Annika.png", truth: "How many club meetings do you have this week? Exact number", dare: "Eat a piece of raw salmon to honor your Norwegian ancestors" },
+    { person: "Brian", img: "Bri.png", truth: "Where exactly in Wisconsin are you from? Show us on a map", dare: "Finish everyone's leftover drinks at the table right now" },
+];
+
+const twoTruths = [
+    { person: "Nishant", img: "Nisha.png", statements: ["I'm 5'2\"", "I was a planned pregnancy", "I once closed a bar on a Tuesday"], lie: 1 },
+    { person: "Colton", img: "Cole.png", statements: ["I was an engineer at SMU", "I've never blacked out at a bar", "I can talk nonstop for 45 minutes straight"], lie: 1 },
+    { person: "Kyle", img: "Kyra.png", statements: ["I grew up in Darien, CT", "I think boat shoes are ironic", "I used to work at JP Morgan"], lie: 1 },
+    { person: "Noam", img: "Noam.png", statements: ["I raised $2.5M in seed funding", "I always fly economy", "I went to Penn before Columbia"], lie: 1 },
+    { person: "Heath", img: "Heather.png", statements: ["I went to public school in Miami", "I have two fellowships", "I work in clean energy"], lie: 0 },
+    { person: "Brenda", img: "Brendan.png", statements: ["I'm the only woman in this app", "I hate running", "I say 'addicted' at least 10 times a day"], lie: 1 },
+    { person: "Nico", img: "Nicole.png", statements: ["I love playing video games on weekends", "I'd rather have cake than a cocktail", "I interned at a luxury bed company"], lie: 0 },
+    { person: "Hans", img: "Hannah.png", statements: ["I'm on the Dean's List", "I've never sung in public", "I went to UGA"], lie: 1 },
+    { person: "Anik", img: "Annika.png", statements: ["I'm part Norwegian", "I'm only in 2 clubs at Columbia", "My family lives across 3 countries"], lie: 1 },
+    { person: "Brian", img: "Bri.png", statements: ["I'm from downtown Milwaukee", "I can outdrink anyone at this table", "I moved to NYC for business school"], lie: 0 },
+];
+
+const mostLikelys = [
+    "Most likely to show up with 2% battery",
+    "Most likely to black out and still ace the midterm",
+    "Most likely to name-drop their alma mater on a first date",
+    "Most likely to call their dad for money mid-dinner",
+    "Most likely to bring a spreadsheet to a party",
+    "Most likely to drunk sprint down Broadway at 2am",
+    "Most likely to stuff a sock somewhere suspicious",
+    "Most likely to say 'let's circle back' during pillow talk",
+    "Most likely to order dessert instead of a real drink",
+    "Most likely to invite you on a boat before knowing your last name",
+    "Most likely to judge you for your carbon footprint",
+    "Most likely to be the last one at the after-party",
+];
+
+function startGame(game) {
+    gameIdx = 0;
+    document.getElementById('gamesMenu').style.display = 'none';
+    document.getElementById('gameActive').style.display = 'flex';
+    if (game === 'hotTakes') renderHotTake();
+    else if (game === 'truthDare') renderTruthDare();
+    else if (game === 'twoTruths') renderTwoTruths();
+    else if (game === 'mostLikely') renderMostLikely();
+}
+
+// ─── Hot Takes ───
+function renderHotTake() {
+    const t = hotTakes[gameIdx];
+    document.getElementById('gameHeaderTitle').textContent = '🔥 Hot Takes';
+    document.getElementById('gameHeaderCount').textContent = `${gameIdx+1}/${hotTakes.length}`;
+    document.getElementById('gameContent').innerHTML = `
+        <div class="g-card">
+            <div class="g-card-photo"><img src="${t.img}" alt="${t.person}"><div><div class="g-card-photo-name">${t.person}</div><div class="g-card-photo-title">says...</div></div></div>
+            <div class="g-card-body">
+                <div class="g-card-text">"${t.take}"</div>
+            </div>
+        </div>
+        <div class="g-btns">
+            <button class="g-btn g-btn-dark" onclick="nextHotTake()">❌ Disagree</button>
+            <button class="g-btn g-btn-pink" onclick="nextHotTake()">🔥 Agree</button>
+        </div>`;
+}
+function nextHotTake() { gameIdx = (gameIdx + 1) % hotTakes.length; renderHotTake(); }
+
+// ─── Truth or Dare ───
+let tdMode = null;
+function renderTruthDare() {
+    const t = truthDares[gameIdx];
+    tdMode = null;
+    document.getElementById('gameHeaderTitle').textContent = '🎲 Truth or Dare';
+    document.getElementById('gameHeaderCount').textContent = `${gameIdx+1}/${truthDares.length}`;
+    document.getElementById('gameContent').innerHTML = `
+        <div class="g-card">
+            <div class="g-card-photo"><img src="${t.img}" alt="${t.person}"><div><div class="g-card-photo-name">${t.person}</div><div class="g-card-photo-title">your turn...</div></div></div>
+            <div class="g-card-body">
+                <div class="g-card-label">Choose your fate</div>
+                <div class="g-card-text" id="tdReveal" style="min-height:80px;">🤔 Truth or Dare?</div>
+            </div>
+        </div>
+        <div class="g-btns" id="tdBtns">
+            <button class="g-btn g-btn-green" onclick="revealTD('truth')">Truth</button>
+            <button class="g-btn g-btn-red" onclick="revealTD('dare')">Dare</button>
+        </div>`;
+}
+function revealTD(mode) {
+    const t = truthDares[gameIdx];
+    document.getElementById('tdReveal').textContent = mode === 'truth' ? t.truth : t.dare;
+    document.getElementById('tdBtns').innerHTML = `<button class="g-btn g-btn-pink" onclick="nextTD()">Next Person →</button>`;
+}
+function nextTD() { gameIdx = (gameIdx + 1) % truthDares.length; renderTruthDare(); }
+
+// ─── Two Truths & A Lie ───
+function renderTwoTruths() {
+    const t = twoTruths[gameIdx];
+    document.getElementById('gameHeaderTitle').textContent = '🤥 Two Truths & A Lie';
+    document.getElementById('gameHeaderCount').textContent = `${gameIdx+1}/${twoTruths.length}`;
+    document.getElementById('gameContent').innerHTML = `
+        <div class="g-card">
+            <div class="g-card-photo"><img src="${t.img}" alt="${t.person}"><div><div class="g-card-photo-name">${t.person}</div><div class="g-card-photo-title">which one is the lie?</div></div></div>
+            <div class="g-card-body" style="padding-top:14px;">
+                ${t.statements.map((s,i) => `<button class="g-option" onclick="guessTT(${i},${t.lie})" id="tto${i}">${i+1}. ${s}</button>`).join('')}
+            </div>
+        </div>`;
+}
+function guessTT(picked, lie) {
+    for (let i = 0; i < 3; i++) {
+        const el = document.getElementById('tto'+i);
+        el.style.pointerEvents = 'none';
+        if (i === lie) el.classList.add('correct');
+        else if (i === picked) el.classList.add('wrong');
+    }
+    const cont = document.querySelector('.g-card-body');
+    cont.innerHTML += `<button class="g-next-btn" onclick="nextTT()" style="margin-top:14px;">Next →</button>`;
+}
+function nextTT() { gameIdx = (gameIdx + 1) % twoTruths.length; renderTwoTruths(); }
+
+// ─── Most Likely To ───
+function renderMostLikely() {
+    const q = mostLikelys[gameIdx];
+    document.getElementById('gameHeaderTitle').textContent = '👑 Most Likely To';
+    document.getElementById('gameHeaderCount').textContent = `${gameIdx+1}/${mostLikelys.length}`;
+    document.getElementById('gameContent').innerHTML = `
+        <div style="text-align:center;margin-bottom:16px;">
+            <div class="g-card-label">vote now</div>
+            <div style="font-size:1.1rem;font-weight:600;line-height:1.5;padding:0 10px;">${q}</div>
+        </div>
+        <div class="g-vote-grid">
+            ${profiles.map((p,i) => `<div class="g-vote-item" onclick="voteML(this)"><img src="${p.images[0]}" alt="${p.name}"><span>${p.name}</span></div>`).join('')}
+        </div>
+        <button class="g-next-btn" onclick="nextML()">Next Question →</button>`;
+}
+function voteML(el) {
+    document.querySelectorAll('.g-vote-item').forEach(e => e.classList.remove('voted'));
+    el.classList.add('voted');
+}
+function nextML() { gameIdx = (gameIdx + 1) % mostLikelys.length; renderMostLikely(); }
+
 </script>
 </body>
 </html>
